@@ -1,5 +1,10 @@
 FROM debian:buster-slim AS final
 
-# 运行程序
-CMD ["chmod", "+x", "./bootstrap.sh"]
+ENV APP_PATH="/app"
+WORKDIR "/app"
+
+# 拷贝程序
+COPY output ${APP_PATH}
+
+RUN chmod +x ./bootstrap.sh
 CMD ["sh","./bootstrap.sh"]
