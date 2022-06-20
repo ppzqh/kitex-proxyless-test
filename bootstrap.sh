@@ -1,1 +1,1 @@
-./bin/kitex -serviceName "kitex-server" -targetServiceName "NA"
+./bin/kitex -serviceName "kitex-client" -targetServiceName "kitex-server"
