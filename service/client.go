@@ -20,9 +20,11 @@ func (c *ProxylessClient) Run() error {
 		req := &proxyless.HelloRequest{Message: "Hello!"}
 		resp, err := c.cli.SayHello(ctx, req)
 		if err != nil {
-			return err
+			fmt.Println(err)
+
+		} else {
+			fmt.Println(resp.String())
 		}
-		fmt.Println(resp.String())
 		time.Sleep(time.Second)
 	}
 	return nil
