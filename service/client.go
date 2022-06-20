@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/cloudwego/kitex-proxyless-test/codec/thrift/kitex_gen/proxyless"
 	"github.com/cloudwego/kitex-proxyless-test/codec/thrift/kitex_gen/proxyless/greetservice"
+	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/pkg/xds"
 	"time"
 )
 
@@ -26,10 +28,10 @@ func (c *ProxylessClient) Run() error {
 	return nil
 }
 func NewProxylessClient(target string) TestService {
-	client, err := greetservice.NewClient(target)
+	xds.Init()
+	cli, err := greetservice.NewClient(target, client.WithXDSSuite())
 	if err != nil {
 		panic("construct client failed")
 	}
-
-	return &ProxylessClient{cli: client}
+	return &ProxylessClient{cli: cli}
 }
