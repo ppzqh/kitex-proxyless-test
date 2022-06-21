@@ -10,4 +10,5 @@ struct HelloResponse {
 
 service GreetService {
     HelloResponse SayHello(1: HelloRequest request);
+    HelloResponse SayHi(1: HelloRequest request);
 }

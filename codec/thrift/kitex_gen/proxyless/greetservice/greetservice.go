@@ -20,6 +20,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	handlerType := (*proxyless.GreetService)(nil)
 	methods := map[string]kitex.MethodInfo{
 		"SayHello": kitex.NewMethodInfo(sayHelloHandler, newGreetServiceSayHelloArgs, newGreetServiceSayHelloResult, false),
+		"SayHi":    kitex.NewMethodInfo(sayHiHandler, newGreetServiceSayHiArgs, newGreetServiceSayHiResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "proxyless",
@@ -53,6 +54,24 @@ func newGreetServiceSayHelloResult() interface{} {
 	return proxyless.NewGreetServiceSayHelloResult()
 }
 
+func sayHiHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*proxyless.GreetServiceSayHiArgs)
+	realResult := result.(*proxyless.GreetServiceSayHiResult)
+	success, err := handler.(proxyless.GreetService).SayHi(ctx, realArg.Request)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newGreetServiceSayHiArgs() interface{} {
+	return proxyless.NewGreetServiceSayHiArgs()
+}
+
+func newGreetServiceSayHiResult() interface{} {
+	return proxyless.NewGreetServiceSayHiResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -68,6 +87,16 @@ func (p *kClient) SayHello(ctx context.Context, request *proxyless.HelloRequest)
 	_args.Request = request
 	var _result proxyless.GreetServiceSayHelloResult
 	if err = p.c.Call(ctx, "SayHello", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) SayHi(ctx context.Context, request *proxyless.HelloRequest) (r *proxyless.HelloResponse, err error) {
+	var _args proxyless.GreetServiceSayHiArgs
+	_args.Request = request
+	var _result proxyless.GreetServiceSayHiResult
+	if err = p.c.Call(ctx, "SayHi", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

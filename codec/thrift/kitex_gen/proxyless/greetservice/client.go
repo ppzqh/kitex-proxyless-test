@@ -12,6 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	SayHello(ctx context.Context, request *proxyless.HelloRequest, callOptions ...callopt.Option) (r *proxyless.HelloResponse, err error)
+	SayHi(ctx context.Context, request *proxyless.HelloRequest, callOptions ...callopt.Option) (r *proxyless.HelloResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -46,4 +47,9 @@ type kGreetServiceClient struct {
 func (p *kGreetServiceClient) SayHello(ctx context.Context, request *proxyless.HelloRequest, callOptions ...callopt.Option) (r *proxyless.HelloResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.SayHello(ctx, request)
+}
+
+func (p *kGreetServiceClient) SayHi(ctx context.Context, request *proxyless.HelloRequest, callOptions ...callopt.Option) (r *proxyless.HelloResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.SayHi(ctx, request)
 }

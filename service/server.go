@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/cloudwego/kitex-proxyless-test/codec/thrift/kitex_gen/proxyless"
 	"github.com/cloudwego/kitex-proxyless-test/codec/thrift/kitex_gen/proxyless/greetservice"
 	"github.com/cloudwego/kitex/server"
@@ -15,6 +16,16 @@ func (s *GreetServiceImpl) SayHello(ctx context.Context, request *proxyless.Hell
 	// TODO: Your code here...
 	resp = proxyless.NewHelloResponse()
 	resp.SetMessage("Hello!")
+	fmt.Println("SayHello is called")
+	return
+}
+
+// SayHi implements the GreetServiceImpl interface.
+func (s *GreetServiceImpl) SayHi(ctx context.Context, request *proxyless.HelloRequest) (resp *proxyless.HelloResponse, err error) {
+	// TODO: Your code here...
+	resp = proxyless.NewHelloResponse()
+	resp.SetMessage("Hi!")
+	fmt.Println("SayHi is called")
 	return
 }
 

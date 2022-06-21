@@ -13,3 +13,9 @@ func (s *GreetServiceImpl) SayHello(ctx context.Context, request *proxyless.Hell
 	// TODO: Your code here...
 	return
 }
+
+// SayHi implements the GreetServiceImpl interface.
+func (s *GreetServiceImpl) SayHi(ctx context.Context, request *proxyless.HelloRequest) (resp *proxyless.HelloResponse, err error) {
+	// TODO: Your code here...
+	return
+}
