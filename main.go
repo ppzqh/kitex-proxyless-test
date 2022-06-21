@@ -14,6 +14,7 @@ var (
 const (
 	testClient = "kitex-client"
 	testServer = "kitex-server"
+	suffix = ".default.svc.cluster.local"
 )
 
 func initFlags() {
@@ -31,7 +32,7 @@ func main() {
 		if targetServiceName == "" {
 			panic("please set the target name")
 		}
-		svc = service.NewProxylessClient(targetServiceName)
+		svc = service.NewProxylessClient(targetServiceName+suffix)
 	case testServer:
 		svc = service.NewProxylessServer()
 	default:
