@@ -1,42 +1,29 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/cloudwego/kitex-proxyless-test/service"
-)
-
-var (
-	serviceName       string
-	targetServiceName string
+	"os"
 )
 
 const (
+	serviceNameKey = "MY_SERVICE_NAME"
 	testClient = "kitex-client"
 	testServer = "kitex-server"
-	suffix = ".default.svc.cluster.local"
+	suffix = ".default.svc.cluster.local:8888"
 )
 
-func initFlags() {
-	flag.StringVar(&serviceName, "serviceName", "", "specify the name of your service")
-	flag.StringVar(&targetServiceName, "targetServiceName", "", "specify the name of your target service")
-
-	flag.Parse()
-}
-
 func main() {
-	initFlags()
+	serviceName, ok := os.LookupEnv(serviceNameKey)
+	if !ok {
+		panic("Please specify the service name")
+	}
 	var svc service.TestService
 	switch serviceName {
 	case testClient:
-		if targetServiceName == "" {
-			panic("please set the target name")
-		}
-		svc = service.NewProxylessClient(targetServiceName+suffix)
+		svc = service.NewProxylessClient(testClient+suffix, testServer+suffix)
 	case testServer:
 		svc = service.NewProxylessServer()
-	default:
-		panic("Tag wrong")
 	}
 	fmt.Println("TEST SERVICE START")
 	err := svc.Run()
