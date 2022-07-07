@@ -51,8 +51,8 @@ func (r *BenchmarkRunner) proxylessBenchmark() {
 }
 
 func (r *BenchmarkRunner) Run() error {
-	// normal client
-	r.normalBenchmark()
+	//// normal client
+	//r.normalBenchmark()
 
 	// proxyless client
 	r.proxylessBenchmark()
