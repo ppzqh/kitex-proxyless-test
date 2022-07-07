@@ -10,6 +10,7 @@ const (
 	serviceNameKey = "MY_SERVICE_NAME"
 	testClient = "kitex-client"
 	testServer = "kitex-server"
+	benchmarkClient = "proxyless-benchmark-client"
 	suffix = ".default.svc.cluster.local:8888"
 )
 
@@ -24,6 +25,8 @@ func main() {
 		svc = service.NewProxylessClient(testClient+suffix, testServer+suffix)
 	case testServer:
 		svc = service.NewProxylessServer()
+	case benchmarkClient:
+		svc = service.NewBenchmarkRunner(testServer+suffix)
 	}
 	fmt.Println("TEST SERVICE START")
 	err := svc.Run()
