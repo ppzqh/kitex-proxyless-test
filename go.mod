@@ -36,4 +36,4 @@ require (
 
 replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 
-replace github.com/cloudwego/kitex => github.com/ppzqh/kitex v0.0.9-0.20220708072129-ab4c3a07b8fc
+replace github.com/cloudwego/kitex => github.com/ppzqh/kitex v0.0.9-0.20220708073437-4820aa4289e2
