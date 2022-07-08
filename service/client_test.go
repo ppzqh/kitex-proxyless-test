@@ -11,5 +11,5 @@ func TestProxylessClient_Benchmark(t *testing.T) {
 	//
 	//normalCli, err := greetservice.NewClient("1", client.WithHostPorts(":8888"))
 	//test.Assert(t, err == nil)
-	//Benchmark(normalCli)
+	//benchmark(normalCli)
 }

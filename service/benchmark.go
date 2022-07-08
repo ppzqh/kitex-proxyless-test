@@ -29,7 +29,7 @@ func NewBenchmarkRunner(target string) *BenchmarkRunner {
 }
 
 func (r *BenchmarkRunner) normalBenchmark() {
-	normalCli, err := greetservice.NewClient(r.targetService)
+	normalCli, err := greetservice.NewClient(r.targetService, client.WithHostPorts(r.targetService))
 	if err != nil {
 		if err != nil {
 			klog.Error("[proxy] construct client error: %v\n", err)
