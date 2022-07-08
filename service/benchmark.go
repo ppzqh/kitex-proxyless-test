@@ -8,9 +8,16 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/xds"
+	"os"
 	"sync"
 	"sync/atomic"
 	"time"
+)
+
+const (
+	meshModeKey       = "mesh_mode"
+	meshModeProxyless = "kitex-proxyless"
+	meshModeProxy     = "envoy-proxy"
 )
 
 type BenchmarkRunner struct {
@@ -51,17 +58,23 @@ func (r *BenchmarkRunner) proxylessBenchmark() {
 }
 
 func (r *BenchmarkRunner) Run() error {
-	//// normal client
-	//r.normalBenchmark()
+	meshMode, ok := os.LookupEnv(meshModeKey)
+	if !ok {
+		return fmt.Errorf("Please specify the mesh mode")
+	}
 
-	// proxyless client
-	r.proxylessBenchmark()
+	switch meshMode {
+	case meshModeProxyless:
+		r.proxylessBenchmark()
+	case meshModeProxy:
+		r.normalBenchmark()
+	}
 	return nil
 }
 
 func benchmark(cli greetservice.Client) {
 	var (
-		totalReq    uint64 = 10000000
+		totalReq    uint64 = 1000000
 		concurrency        = 10
 	)
 
@@ -77,8 +90,10 @@ func benchmark(cli greetservice.Client) {
 				_, err := cli.SayHello(context.Background(), req)
 				if err != nil {
 					atomic.AddUint64(&errCnt, 1)
+					klog.Error("request error: %v\n", err)
 				}
 				atomic.AddUint64(&currCnt, 1)
+				// TODO: atomic check
 				if currCnt >= totalReq {
 					wg.Done()
 					return
@@ -89,7 +104,7 @@ func benchmark(cli greetservice.Client) {
 	wg.Wait()
 	endTime := time.Now()
 	totalTime := endTime.Sub(startTime)
-	qps := float64(totalReq) / totalTime.Seconds()
+	qps := float64(currCnt-errCnt) / totalTime.Seconds()
 	fmt.Println("Benchmark Finished")
 	fmt.Printf("Total request: %d, error num: %d, cost: %dms, QPS: %f\n", totalReq, errCnt, endTime.Sub(startTime).Milliseconds(), qps)
 }

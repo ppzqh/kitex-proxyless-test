@@ -10,7 +10,7 @@ const (
 	serviceNameKey = "MY_SERVICE_NAME"
 	testClient = "kitex-client"
 	testServer = "kitex-server"
-	benchmarkClient = "proxyless-benchmark-client"
+	benchmarkClient = "benchmark-client"
 	suffix = ".default.svc.cluster.local:8888"
 )
 
