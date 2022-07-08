@@ -8,6 +8,7 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/xds"
+	dns "github.com/kitex-contrib/resolver-dns"
 	"os"
 	"sync"
 	"sync/atomic"
@@ -17,7 +18,8 @@ import (
 const (
 	meshModeKey       = "mesh_mode"
 	meshModeProxyless = "kitex-proxyless"
-	meshModeProxy     = "envoy-proxy"
+	meshModeProxy     = "kitex-sidecar"
+	meshModeDirect    = "kitex-direct"
 )
 
 type BenchmarkRunner struct {
@@ -28,22 +30,34 @@ func NewBenchmarkRunner(target string) *BenchmarkRunner {
 	return &BenchmarkRunner{targetService: target}
 }
 
-func (r *BenchmarkRunner) normalBenchmark() {
-	normalCli, err := greetservice.NewClient(r.targetService, client.WithHostPorts(r.targetService))
+func (r *BenchmarkRunner) directBenchmark() {
+	cli, err := greetservice.NewClient(r.targetService, client.WithResolver(dns.NewDNSResolver()))
 	if err != nil {
 		if err != nil {
-			klog.Error("[proxy] construct client error: %v\n", err)
+			klog.Error("[direct benchmark] construct client error: %v\n", err)
 			return
 		}
 	}
-	klog.Info("Start normal benchmark")
-	benchmark(normalCli)
+	klog.Info("Start Direct (DNS) benchmark")
+	benchmark(cli)
+}
+
+func (r *BenchmarkRunner) sidecarBenchmark() {
+	cli, err := greetservice.NewClient(r.targetService, client.WithHostPorts(r.targetService))
+	if err != nil {
+		if err != nil {
+			klog.Error("[sidecar benchmark] construct client error: %v\n", err)
+			return
+		}
+	}
+	klog.Info("Start Sidecar benchmark")
+	benchmark(cli)
 }
 
 func (r *BenchmarkRunner) proxylessBenchmark() {
 	err := xds.Init()
 	if err != nil {
-		klog.Error("[proxyless] xds init error: %v\n", err)
+		klog.Error("[proxyless benchmark] xds init error: %v\n", err)
 		return
 	}
 	cli, err := greetservice.NewClient(r.targetService,
@@ -53,7 +67,7 @@ func (r *BenchmarkRunner) proxylessBenchmark() {
 		klog.Error("[proxyless] construct client error: %v\n", err)
 		return
 	}
-	klog.Info("Start proxyless benchmark")
+	klog.Info("Start Proxyless benchmark")
 	benchmark(cli)
 }
 
@@ -67,7 +81,9 @@ func (r *BenchmarkRunner) Run() error {
 	case meshModeProxyless:
 		r.proxylessBenchmark()
 	case meshModeProxy:
-		r.normalBenchmark()
+		r.sidecarBenchmark()
+	case meshModeDirect:
+		r.directBenchmark()
 	}
 	return nil
 }

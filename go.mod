@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/apache/thrift v0.16.0
 	github.com/cloudwego/kitex v0.3.2
+	github.com/kitex-contrib/resolver-dns v0.0.0-20211026091019-d57feaffb777
 )
 
 require (
