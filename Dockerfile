@@ -1,4 +1,4 @@
-FROM debian:buster-slim AS final
+FROM nicolaka/netshoot AS final
 
 ENV APP_PATH="/app"
 WORKDIR "/app"
