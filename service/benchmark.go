@@ -39,7 +39,9 @@ func (r *BenchmarkRunner) directBenchmark() {
 		}
 	}
 	klog.Info("Start Direct (DNS) benchmark")
-	benchmark(cli)
+	for {
+		benchmark(cli)
+	}
 }
 
 func (r *BenchmarkRunner) sidecarBenchmark() {
@@ -51,7 +53,9 @@ func (r *BenchmarkRunner) sidecarBenchmark() {
 		}
 	}
 	klog.Info("Start Sidecar benchmark")
-	benchmark(cli)
+	for {
+		benchmark(cli)
+	}
 }
 
 func (r *BenchmarkRunner) proxylessBenchmark() {
@@ -68,7 +72,9 @@ func (r *BenchmarkRunner) proxylessBenchmark() {
 		return
 	}
 	klog.Info("Start Proxyless benchmark")
-	benchmark(cli)
+	for {
+		benchmark(cli)
+	}
 }
 
 func (r *BenchmarkRunner) Run() error {
